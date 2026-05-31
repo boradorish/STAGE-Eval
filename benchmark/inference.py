@@ -139,6 +139,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--tensor-parallel-size", type=int, default=1)
     parser.add_argument("--gpu-memory-utilization", type=float, default=0.9)
     parser.add_argument("--max-model-len", type=int, default=None)
+    parser.add_argument(
+        "--enforce-eager",
+        action="store_true",
+        help="Disable vLLM/Torch compile paths; useful on servers without a C compiler.",
+    )
     return parser.parse_args()
 
 
@@ -179,6 +184,7 @@ def main() -> None:
         tensor_parallel_size=args.tensor_parallel_size,
         gpu_memory_utilization=args.gpu_memory_utilization,
         max_model_len=args.max_model_len,
+        enforce_eager=args.enforce_eager,
     )
 
     final_total = len(saved_records) + len(rows)

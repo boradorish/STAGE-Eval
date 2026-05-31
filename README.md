@@ -16,7 +16,7 @@ pip install -r benchmark/requirements.txt
 
 ```bash
 python benchmark/download_benchmark.py \
-  --dataset boradorish/text-to-json-benchmark \
+  --dataset boradorish/STAGE-eval \
   --split test \
   --output benchmark/data/test.jsonl
 ```
@@ -29,10 +29,10 @@ python benchmark/download_benchmark.py \
 python benchmark/inference.py \
   --benchmark-source local \
   --benchmark-file benchmark/data/test.jsonl \
-  --model saves/qwen3-0.6b/full/sft \
+  --model Qwen/Qwen3-4B \
   --batch-size 4 \
   --max-model-len 8192 \
-  --output benchmark/runs/qwen3_0_6b_sft
+  --output benchmark/runs/qwen3_4b
 ```
 
 You can also skip the local download and stream/load directly from HF:
@@ -41,9 +41,9 @@ You can also skip the local download and stream/load directly from HF:
 python benchmark/inference.py \
   --benchmark-source hf \
   --hf-split test \
-  --model saves/qwen3-0.6b/full/sft \
+  --model Qwen/Qwen3-4B \
   --max-model-len 8192 \
-  --output benchmark/runs/qwen3_0_6b_sft
+  --output benchmark/runs/qwen3_4b
 ```
 
 The progress bar is global over the full benchmark, independent of batch size.
@@ -59,7 +59,7 @@ tokens`.
 
 ```bash
 python benchmark/evaluate.py \
-  --input benchmark/runs/qwen3_0_6b_sft.jsonl
+  --input benchmark/runs/qwen3_4b.jsonl
 ```
 
 Evaluation intentionally excludes LLM-as-a-judge semantic scoring. It reports
@@ -68,14 +68,5 @@ noise ratio, and rule-based leaf value match.
 
 The output Excel has two sheets:
 
-- `rows`: per-sample metrics, including `language_group`
-- `language_summary`: metrics grouped by `ko`, `mixed`, `non_ko`, or `unknown`
-
-Language grouping is heuristic and uses Hangul/Latin character ratios from
-`user_prompt` by default. To classify with another field:
-
-```bash
-python benchmark/evaluate.py \
-  --input benchmark/runs/qwen3_0_6b_sft.jsonl \
-  --language-field raw_output
-```
+- `rows`: per-sample metrics
+- `summary`: aggregate benchmark metrics
